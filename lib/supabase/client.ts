@@ -28,8 +28,7 @@ export const getSupabase = () => {
 };
 
 export const getSupabaseAdmin = () => {
-  if (supabaseAdminInstance) return supabaseAdminInstance;
-  
+  // Don't cache in middleware - create fresh instance each time
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   
@@ -41,18 +40,18 @@ export const getSupabaseAdmin = () => {
     throw new Error('Missing Supabase admin environment variables');
   }
   
-  supabaseAdminInstance = createClient(supabaseUrl, supabaseServiceKey, {
+  // Always create fresh instance for middleware
+  return createClient(supabaseUrl, supabaseServiceKey, {
     db: { schema: SCHEMA },
     auth: {
       autoRefreshToken: false,
       persistSession: false
     }
   });
-  
-  return supabaseAdminInstance;
 };
 
 // For backward compatibility - use getters
 export const supabase = getSupabase();
 export const supabaseAdmin = getSupabaseAdmin();
-export const db = supabaseAdmin;
+// Use getter function for db to ensure fresh instance in middleware
+export const db = getSupabaseAdmin();
