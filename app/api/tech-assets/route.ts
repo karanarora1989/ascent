@@ -9,11 +9,10 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get all active tech assets grouped by category
+    // Get all tech assets grouped by category
     const { data: techAssets, error } = await db
       .from('tech_assets')
       .select('*')
-      .eq('is_active', true)
       .order('category', { ascending: true })
       .order('name', { ascending: true });
 
