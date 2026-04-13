@@ -22,11 +22,11 @@ export default function SignUpPage() {
   }, []);
 
   useEffect(() => {
-    // Show squad selection after successful signup
-    if (isSignedIn && user && !showSquadSelection) {
-      setShowSquadSelection(true);
+    // Redirect to dashboard after successful signup
+    if (isSignedIn && user) {
+      router.push('/dashboard');
     }
-  }, [isSignedIn, user]);
+  }, [isSignedIn, user, router]);
 
   const fetchSquads = async () => {
     try {
