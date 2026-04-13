@@ -58,6 +58,11 @@ CREATE TABLE IF NOT EXISTS public.work_items (
   -- Impact prediction (nullable - filled by TrueProblem)
   impact_bucket_primary TEXT CHECK (impact_bucket_primary IN ('growth', 'profitability', 'risk', 'compliance')),
   predicted_profitability_cr DECIMAL(10,2),
+  predicted_disbursements_cr DECIMAL(10,2),
+  predicted_margin_pct DECIMAL(5,2),
+  predicted_provisions_cr DECIMAL(10,2),
+  predicted_compliance_count INTEGER,
+  predicted_compliance_pct DECIMAL(5,2),
   impact_confidence_level TEXT CHECK (impact_confidence_level IN ('high', 'medium', 'low')),
   
   -- Ranking
