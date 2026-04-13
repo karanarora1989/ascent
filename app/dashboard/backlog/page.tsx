@@ -140,7 +140,7 @@ export default function BacklogPage() {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          lifecycle_stage: 'prioritization',
+          lifecycle_stage: 'prioritized',
           impact_bucket_primary: hypothesisLocked.impact_bucket,
           predicted_profitability_cr: hypothesisLocked.predicted_profitability_cr,
           predicted_disbursements_cr: hypothesisLocked.predicted_disbursements_cr,
