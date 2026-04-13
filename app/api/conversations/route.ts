@@ -19,18 +19,49 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Upsert conversation
-    const { data, error } = await db
+    // Upsert conversation - first try to find existing
+    const { data: existing } = await db
       .from('conversations')
-      .upsert({
-        work_item_id,
-        conversation_type,
-        messages: JSON.stringify(messages),
-        status: status || 'active',
-        updated_at: new Date().toISOString(),
-      })
-      .select()
+      .select('id')
+      .eq('work_item_id', work_item_id)
+      .eq('conversation_type', conversation_type)
+      .eq('user_id', userId)
       .single();
+
+    let data, error;
+    
+    if (existing) {
+      // Update existing conversation
+      const result = await db
+        .from('conversations')
+        .update({
+          messages: JSON.stringify(messages),
+          status: status || 'active',
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', existing.id)
+        .select()
+        .single();
+      data = result.data;
+      error = result.error;
+    } else {
+      // Insert new conversation
+      const result = await db
+        .from('conversations')
+        .insert({
+          work_item_id,
+          conversation_type,
+          messages: JSON.stringify(messages),
+          status: status || 'active',
+          user_id: userId,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+        .select()
+        .single();
+      data = result.data;
+      error = result.error;
+    }
 
     if (error) {
       console.error('Error saving conversation:', error);
