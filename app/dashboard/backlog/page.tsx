@@ -34,9 +34,11 @@ export default function BacklogPage() {
   const [selectedTechAssets, setSelectedTechAssets] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const { messages, isStreaming, streamingText, error, sendMessage, setInitialMessage } = useAIChat({
+  const { messages, isStreaming, streamingText, error, sendMessage, setInitialMessage, loadMessages, saveConversation } = useAIChat({
     systemPromptKey: 'trueProblem',
     context: selectedItem ? { workItem: selectedItem } : undefined,
+    workItemId: selectedItem?.id,
+    conversationType: 'trueproblem',
     onComplete: (fullResponse) => {
       // Check if hypothesis is locked
       const match = fullResponse.match(/<hypothesis_locked>([\s\S]*?)<\/hypothesis_locked>/);
@@ -50,6 +52,16 @@ export default function BacklogPage() {
       }
     },
   });
+
+  // Auto-save conversation after each message
+  useEffect(() => {
+    if (messages.length > 0 && selectedItem) {
+      const timer = setTimeout(() => {
+        saveConversation();
+      }, 1000); // Debounce 1 second
+      return () => clearTimeout(timer);
+    }
+  }, [messages, selectedItem, saveConversation]);
 
   useEffect(() => {
     fetchBacklog();
@@ -95,10 +107,26 @@ export default function BacklogPage() {
     }
   };
 
-  const startTrueProblem = (item: WorkItem) => {
+  const startTrueProblem = async (item: WorkItem) => {
     setSelectedItem(item);
     setShowChat(true);
     setHypothesisLocked(null);
+    
+    // Load existing conversation if available
+    try {
+      const res = await fetch(`/api/conversations?work_item_id=${item.id}&type=trueproblem`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.conversation && data.conversation.messages) {
+          loadMessages(data.conversation.messages);
+          return; // Don't set initial message if conversation exists
+        }
+      }
+    } catch (error) {
+      console.error('Error loading conversation:', error);
+    }
+    
+    // Only set initial message if no existing conversation
     setInitialMessage(`Let's stress-test the impact hypothesis for "${item.title}". \n\nFirst, can you describe the problem this initiative solves?`);
   };
 
