@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const work_item_id = searchParams.get('work_item_id');
-    const conversation_type = searchParams.get('conversation_type');
+    const conversation_type = searchParams.get('type') || searchParams.get('conversation_type');
 
     if (!work_item_id || !conversation_type) {
       return NextResponse.json(

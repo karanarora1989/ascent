@@ -199,31 +199,38 @@ export default function BacklogPage() {
 
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {/* All Assets - Scrollable List */}
-          <div className="space-y-2">
-            {techAssets.map((asset) => (
-              <label
-                key={asset.id}
-                className={`flex items-center p-3 border-2 rounded-lg cursor-pointer ${
-                  selectedTechAssets.includes(asset.id)
-                    ? 'border-indigo-600 bg-indigo-50'
-                    : 'border-gray-200'
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  checked={selectedTechAssets.includes(asset.id)}
-                  onChange={() => handleTechAssetToggle(asset.id)}
-                  className="w-4 h-4 text-indigo-600 rounded"
-                />
-                <div className="ml-3 flex-1">
-                  <span className="text-sm font-medium text-gray-900 block">{asset.name}</span>
-                  {asset.category && (
-                    <span className="text-xs text-gray-500">{asset.category}</span>
-                  )}
-                </div>
-              </label>
-            ))}
-          </div>
+          {techAssets.length === 0 ? (
+            <div className="text-center py-8 text-gray-400">
+              <p className="text-sm">No tech assets found</p>
+              <p className="text-xs mt-2">Please add tech assets to the database</p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {techAssets.map((asset) => (
+                <label
+                  key={asset.id}
+                  className={`flex items-center p-3 border-2 rounded-lg cursor-pointer ${
+                    selectedTechAssets.includes(asset.id)
+                      ? 'border-indigo-600 bg-indigo-50'
+                      : 'border-gray-200'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedTechAssets.includes(asset.id)}
+                    onChange={() => handleTechAssetToggle(asset.id)}
+                    className="w-4 h-4 text-indigo-600 rounded"
+                  />
+                  <div className="ml-3 flex-1">
+                    <span className="text-sm font-medium text-gray-900 block">{asset.name}</span>
+                    {asset.category && (
+                      <span className="text-xs text-gray-500">{asset.category}</span>
+                    )}
+                  </div>
+                </label>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Footer */}
