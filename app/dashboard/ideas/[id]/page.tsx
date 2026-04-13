@@ -14,6 +14,10 @@ interface WorkItem {
   title: string;
   description: string;
   source: string;
+  work_category: string | null;
+  ai_type: string | null;
+  discovery_channel: string | null;
+  signal_quality: string | null;
   lifecycle_stage: string;
   primary_squad_id: string;
   created_at: string;
@@ -348,13 +352,37 @@ export default function IdeaDetailPage() {
         <div className="bg-white rounded-lg shadow">
           <div className="p-6 border-b border-gray-200">
             <h1 className="text-3xl font-bold text-gray-900 mb-4">{idea.title}</h1>
-            <div className="flex items-center space-x-4 text-sm">
+            <div className="flex items-center flex-wrap gap-2 text-sm">
               <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                 {formatSource(idea.source)}
               </span>
               <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                 {idea.lifecycle_stage}
               </span>
+              {idea.work_category && (
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                  {idea.work_category === 'big_rock' ? 'Big Rocks' : idea.work_category === 'cto_okr' ? 'CTO OKR' : 'BAU'}
+                </span>
+              )}
+              {idea.ai_type && (
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700">
+                  {idea.ai_type === 'ai' ? 'AI' : 'Non-AI'}
+                </span>
+              )}
+              {idea.discovery_channel && (
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                  {idea.discovery_channel === 'self' ? 'Self' : 'Business'}
+                </span>
+              )}
+              {idea.signal_quality && (
+                <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                  idea.signal_quality === 'high' ? 'bg-green-100 text-green-700' :
+                  idea.signal_quality === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                  'bg-gray-100 text-gray-700'
+                }`}>
+                  Signal: {idea.signal_quality}
+                </span>
+              )}
               {idea.squad && (
                 <span className="flex items-center text-gray-600">
                   <svg

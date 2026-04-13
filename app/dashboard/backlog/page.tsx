@@ -170,65 +170,32 @@ export default function BacklogPage() {
         />
 
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {/* Search */}
-          <input
-            type="text"
-            placeholder="Search tech assets..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-          />
-
-          {/* Assets by Category */}
-          {searchTerm ? (
-            <div className="space-y-2">
-              {filteredAssets.map((asset) => (
-                <label
-                  key={asset.id}
-                  className={`flex items-center p-3 border-2 rounded-lg cursor-pointer ${
-                    selectedTechAssets.includes(asset.id)
-                      ? 'border-indigo-600 bg-indigo-50'
-                      : 'border-gray-200'
-                  }`}
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedTechAssets.includes(asset.id)}
-                    onChange={() => handleTechAssetToggle(asset.id)}
-                    className="w-4 h-4 text-indigo-600 rounded"
-                  />
-                  <span className="ml-3 text-sm font-medium text-gray-900">{asset.name}</span>
-                  <span className="ml-auto text-xs text-gray-500">{asset.category}</span>
-                </label>
-              ))}
-            </div>
-          ) : (
-            Object.entries(groupedAssets).map(([category, assets]: [string, any]) => (
-              <div key={category}>
-                <h3 className="text-xs font-semibold text-gray-700 mb-2">{category}</h3>
-                <div className="space-y-2">
-                  {assets.map((asset: any) => (
-                    <label
-                      key={asset.id}
-                      className={`flex items-center p-3 border-2 rounded-lg cursor-pointer ${
-                        selectedTechAssets.includes(asset.id)
-                          ? 'border-indigo-600 bg-indigo-50'
-                          : 'border-gray-200'
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedTechAssets.includes(asset.id)}
-                        onChange={() => handleTechAssetToggle(asset.id)}
-                        className="w-4 h-4 text-indigo-600 rounded"
-                      />
-                      <span className="ml-3 text-sm font-medium text-gray-900">{asset.name}</span>
-                    </label>
-                  ))}
+          {/* All Assets - Scrollable List */}
+          <div className="space-y-2">
+            {techAssets.map((asset) => (
+              <label
+                key={asset.id}
+                className={`flex items-center p-3 border-2 rounded-lg cursor-pointer ${
+                  selectedTechAssets.includes(asset.id)
+                    ? 'border-indigo-600 bg-indigo-50'
+                    : 'border-gray-200'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedTechAssets.includes(asset.id)}
+                  onChange={() => handleTechAssetToggle(asset.id)}
+                  className="w-4 h-4 text-indigo-600 rounded"
+                />
+                <div className="ml-3 flex-1">
+                  <span className="text-sm font-medium text-gray-900 block">{asset.name}</span>
+                  {asset.category && (
+                    <span className="text-xs text-gray-500">{asset.category}</span>
+                  )}
                 </div>
-              </div>
-            ))
-          )}
+              </label>
+            ))}
+          </div>
         </div>
 
         {/* Footer */}
