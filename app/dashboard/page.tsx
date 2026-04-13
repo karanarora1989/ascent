@@ -5,36 +5,30 @@ import Link from 'next/link';
 
 export default async function HomePage() {
   // Fetch funnel counts
-  const { data: ideas } = await db
+  const { count: ideasCount } = await db
     .from('work_items')
-    .select('id', { count: 'exact', head: true })
+    .select('*', { count: 'exact', head: true })
     .eq('lifecycle_stage', 'idea');
 
-  const { data: backlog } = await db
+  const { count: backlogCount } = await db
     .from('work_items')
-    .select('id', { count: 'exact', head: true })
+    .select('*', { count: 'exact', head: true })
     .eq('lifecycle_stage', 'backlog');
 
-  const { data: prioritization } = await db
+  const { count: prioritizationCount } = await db
     .from('work_items')
-    .select('id', { count: 'exact', head: true })
-    .eq('lifecycle_stage', 'prioritization');
+    .select('*', { count: 'exact', head: true })
+    .eq('lifecycle_stage', 'prioritized');
 
-  const { data: specDone } = await db
+  const { count: specDoneCount } = await db
     .from('work_items')
-    .select('id', { count: 'exact', head: true })
+    .select('*', { count: 'exact', head: true })
     .eq('lifecycle_stage', 'spec_done');
 
-  const { data: ingested } = await db
+  const { count: ingestedCount } = await db
     .from('work_items')
-    .select('id', { count: 'exact', head: true })
+    .select('*', { count: 'exact', head: true })
     .eq('lifecycle_stage', 'ingested');
-
-  const ideasCount = ideas?.length || 0;
-  const backlogCount = backlog?.length || 0;
-  const prioritizationCount = prioritization?.length || 0;
-  const specDoneCount = specDone?.length || 0;
-  const ingestedCount = ingested?.length || 0;
 
   return (
     <div className="flex flex-col h-full">

@@ -13,6 +13,8 @@ interface Idea {
   description: string;
   source: string;
   work_category: string | null;
+  ai_type: string | null;
+  discovery_channel: string | null;
   signal_quality: string | null;
   created_at: string;
   squad: { name: string } | null;
@@ -402,14 +404,26 @@ export default function IdeasPage() {
                     {idea.description}
                   </p>
                 )}
-                <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
-                  {idea.squad && <span>• {idea.squad.name}</span>}
+                <div className="flex items-center flex-wrap gap-2 text-xs mb-3">
+                  {idea.squad && (
+                    <span className="text-gray-600">{idea.squad.name}</span>
+                  )}
                   {idea.work_category && (
-                    <span className="px-2 py-0.5 bg-gray-100 rounded">
-                      {idea.work_category}
+                    <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded">
+                      {idea.work_category === 'big_rock' ? 'Big Rocks' : idea.work_category === 'cto_okr' ? 'CTO OKR' : 'BAU'}
                     </span>
                   )}
-                  <span className="ml-auto">
+                  {idea.ai_type && (
+                    <span className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded">
+                      {idea.ai_type === 'ai' ? 'AI' : 'Non-AI'}
+                    </span>
+                  )}
+                  {idea.discovery_channel && (
+                    <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded">
+                      {idea.discovery_channel === 'self' ? 'Self' : 'Business'}
+                    </span>
+                  )}
+                  <span className="ml-auto text-gray-500">
                     {new Date(idea.created_at).toLocaleDateString()}
                   </span>
                 </div>
