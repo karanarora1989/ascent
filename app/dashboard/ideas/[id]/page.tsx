@@ -37,16 +37,9 @@ export default function IdeaDetailPage() {
   const [squads, setSquads] = useState<Squad[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
-  const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [promoting, setPromoting] = useState(false);
   const [error, setError] = useState('');
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    source: '',
-    primary_squad_id: '',
-  });
 
   useEffect(() => {
     fetchData();
@@ -62,12 +55,6 @@ export default function IdeaDetailPage() {
       if (ideaRes.ok) {
         const ideaData = await ideaRes.json();
         setIdea(ideaData.workItem);
-        setFormData({
-          title: ideaData.workItem.title,
-          description: ideaData.workItem.description || '',
-          source: ideaData.workItem.source,
-          primary_squad_id: ideaData.workItem.primary_squad_id,
-        });
       } else {
         setError('Idea not found');
       }
@@ -84,34 +71,6 @@ export default function IdeaDetailPage() {
     }
   };
 
-  const handleUpdate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setSaving(true);
-
-    try {
-      const response = await fetch(`/api/work-items/${ideaId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Failed to update idea');
-      }
-
-      const data = await response.json();
-      setIdea(data.workItem);
-      setEditing(false);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update idea');
-    } finally {
-      setSaving(false);
-    }
-  };
 
   const handleDelete = async () => {
     if (!confirm('Are you sure you want to delete this idea? This action cannot be undone.')) {
@@ -254,102 +213,8 @@ export default function IdeaDetailPage() {
         </div>
       )}
 
-      {/* Content */}
-      {editing ? (
-        <form onSubmit={handleUpdate} className="bg-white rounded-lg shadow p-6 space-y-6">
-          <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
-              Title <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              id="title"
-              required
-              value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-              Description
-            </label>
-            <textarea
-              id="description"
-              rows={6}
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="source" className="block text-sm font-medium text-gray-700 mb-2">
-              Source <span className="text-red-500">*</span>
-            </label>
-            <select
-              id="source"
-              required
-              value={formData.source}
-              onChange={(e) => setFormData({ ...formData, source: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-            >
-              <option value="ad_hoc">Ad Hoc</option>
-              <option value="annual_plan">Annual Plan</option>
-              <option value="quarterly_okr">Quarterly OKR</option>
-              <option value="stakeholder">Stakeholder Request</option>
-            </select>
-          </div>
-
-          <div>
-            <label htmlFor="squad" className="block text-sm font-medium text-gray-700 mb-2">
-              Primary Squad <span className="text-red-500">*</span>
-            </label>
-            <select
-              id="squad"
-              required
-              value={formData.primary_squad_id}
-              onChange={(e) => setFormData({ ...formData, primary_squad_id: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-            >
-              <option value="">Select a squad...</option>
-              {squads.map((squad) => (
-                <option key={squad.id} value={squad.id}>
-                  {squad.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="flex justify-end space-x-4 pt-4 border-t">
-            <button
-              type="button"
-              onClick={() => {
-                setEditing(false);
-                setFormData({
-                  title: idea.title,
-                  description: idea.description || '',
-                  source: idea.source,
-                  primary_squad_id: idea.primary_squad_id,
-                });
-                setError('');
-              }}
-              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={saving}
-              className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {saving ? 'Saving...' : 'Save Changes'}
-            </button>
-          </div>
-        </form>
-      ) : (
-        <div className="bg-white rounded-lg shadow">
+      {/* Content - View Only */}
+      <div className="bg-white rounded-lg shadow">
           <div className="p-6 border-b border-gray-200">
             <h1 className="text-3xl font-bold text-gray-900 mb-4">{idea.title}</h1>
             <div className="flex items-center flex-wrap gap-2 text-sm">
@@ -426,7 +291,6 @@ export default function IdeaDetailPage() {
             </div>
           </div>
         </div>
-      )}
 
       {/* Actions */}
       {!editing && idea.lifecycle_stage === 'idea' && (
