@@ -55,7 +55,7 @@ export default function SpecPage() {
 
   const fetchItems = async () => {
     try {
-      const res = await fetch('/api/work-items?stage=prioritization');
+      const res = await fetch('/api/work-items?stage=prioritized');
       const data = await res.json();
       // Sort by rank (ranked items first, then unranked)
       const sorted = (data.workItems || []).sort((a: WorkItem, b: WorkItem) => {
