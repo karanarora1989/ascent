@@ -85,13 +85,33 @@ export default function SpecPage() {
         // Resume existing conversation
         loadMessages(data.conversation.messages);
       } else {
-        // Start new conversation
-        setInitialMessage(`Let's write the spec for "${item.title}". \n\nI'll help you build a clear, actionable PRD. First, can you confirm the problem statement?`);
+        // Start new conversation with problem context
+        const problemContext = `VALIDATED PROBLEM STATEMENT (from TrueProblem):
+
+Title: ${item.title}
+${item.description ? `Description: ${item.description}\n` : ''}
+Impact Bucket: ${item.impact_bucket_primary || 'Not specified'}
+Predicted Impact: ₹${item.predicted_profitability_cr || 0}Cr
+Confidence Level: ${item.impact_confidence_level || 'Not specified'}
+
+Now let's build the solution. I'll guide you through creating a comprehensive PRD.`;
+        
+        setInitialMessage(problemContext);
       }
     } catch (error) {
       console.error('Error loading conversation:', error);
-      // Start new conversation on error
-      setInitialMessage(`Let's write the spec for "${item.title}". \n\nI'll help you build a clear, actionable PRD. First, can you confirm the problem statement?`);
+      // Start new conversation on error with problem context
+      const problemContext = `VALIDATED PROBLEM STATEMENT (from TrueProblem):
+
+Title: ${item.title}
+${item.description ? `Description: ${item.description}\n` : ''}
+Impact Bucket: ${item.impact_bucket_primary || 'Not specified'}
+Predicted Impact: ₹${item.predicted_profitability_cr || 0}Cr
+Confidence Level: ${item.impact_confidence_level || 'Not specified'}
+
+Now let's build the solution. I'll guide you through creating a comprehensive PRD.`;
+      
+      setInitialMessage(problemContext);
     }
   };
 
