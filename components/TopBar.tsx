@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
+import { UserButton } from '@clerk/nextjs';
 
 interface TopBarProps {
   title: string;
@@ -31,7 +32,16 @@ export function TopBar({ title, subtitle, showBack = false, right }: TopBarProps
           )}
         </div>
       </div>
-      {right && <div className="flex items-center gap-2 flex-shrink-0 ml-2">{right}</div>}
+      <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+        {right}
+        <UserButton 
+          appearance={{
+            elements: {
+              avatarBox: "w-8 h-8"
+            }
+          }}
+        />
+      </div>
     </div>
   );
 }
