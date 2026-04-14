@@ -35,7 +35,7 @@ export default function PrioritizationPage() {
 
   const fetchPrioritizationItems = async () => {
     try {
-      const res = await fetch('/api/work-items?stage=prioritization');
+      const res = await fetch('/api/work-items?stage=prioritized');
       const data = await res.json();
       setItems(data.workItems || []);
     } catch (error) {
