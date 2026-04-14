@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
     const { data: items, error } = await db
       .from('work_items')
       .select('*')
-      .eq('lifecycle_stage', 'prioritization')
+      .eq('lifecycle_stage', 'prioritized')
       .order('created_at', { ascending: true });
 
     if (error) {
